@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Minimal Weather</title>
+    <title>Pure Weather</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,600,0,0" />
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -36,7 +36,7 @@
 
         * { 
             box-sizing: border-box; 
-            transition: none !important; 
+            transition: none !important; /* Critical for e-ink */
             -webkit-tap-highlight-color: transparent;
             -webkit-user-select: none;
             user-select: none;
@@ -59,7 +59,10 @@
             width: 100%;
             max-width: 420px;
             text-align: center;
-            padding-bottom: 60px;
+            padding-bottom: 80px; /* Space for bottom nav */
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
         }
 
         .material-symbols-outlined {
@@ -103,7 +106,7 @@
             padding: 5px;
         }
 
-        .menu-overlay {
+        .menu-overlay, .search-overlay {
             display: none;
             position: fixed;
             top: 0;
@@ -112,9 +115,13 @@
             height: 100vh;
             background: var(--bg);
             z-index: 2000;
-            padding: 20px 20px 80px 20px;
+            padding: 20px;
             flex-direction: column;
             align-items: center;
+        }
+        
+        .menu-overlay {
+            padding-bottom: 80px;
         }
 
         .menu-content {
@@ -188,10 +195,7 @@
             gap: 5px;
         }
         .nav-btn:last-child { border-right: none; }
-        .nav-btn.active {
-            background: var(--fg);
-            color: var(--bg);
-        }
+        .nav-btn.active { background: var(--fg); color: var(--bg); }
 
         .settings-group {
             border: 1px dashed var(--fg);
@@ -208,10 +212,7 @@
             display: block;
         }
 
-        .theme-options {
-            display: flex;
-            gap: 5px;
-        }
+        .theme-options { display: flex; gap: 5px; }
 
         .theme-btn {
             flex: 1;
@@ -224,10 +225,7 @@
             text-transform: uppercase;
             font-size: 0.8rem;
         }
-        .theme-btn.active {
-            background: var(--fg);
-            color: var(--bg);
-        }
+        .theme-btn.active { background: var(--fg); color: var(--bg); }
 
         .shortcut-list {
             font-size: 0.85rem;
@@ -245,33 +243,14 @@
             line-height: 1.5;
         }
         
-        .version-text a {
-            color: inherit;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        .search-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: var(--bg);
-            z-index: 2000;
-            padding: 20px;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-            justify-content: center;
-        }
+        .version-text a { color: inherit; text-decoration: underline; cursor: pointer; }
 
         .search-input-group {
             display: flex;
             gap: 5px;
             width: 100%;
             max-width: 300px;
+            justify-content: center;
         }
 
         input {
@@ -310,8 +289,13 @@
         }
         .close-overlay-btn .material-symbols-outlined { font-size: 36px; }
 
-        #current-weather {
-            display: none;
+        /* TAB LOGIC STYLES */
+        .tab-section {
+            display: none; /* Hidden by default */
+            width: 100%;
+        }
+
+        #tab-overview {
             flex-direction: column;
             width: 100%;
             margin-bottom: 25px;
@@ -352,17 +336,8 @@
         }
         .main-icon { font-size: 84px !important; }
         .temp-group { text-align: left; }
-        .temp-large { 
-            font-size: 4.5rem; 
-            font-weight: 800; 
-            line-height: 0.9; 
-        }
-        .condition-text { 
-            font-size: 1.1rem; 
-            text-transform: uppercase; 
-            font-weight: 700;
-            margin-top: 5px;
-        }
+        .temp-large { font-size: 4.5rem; font-weight: 800; line-height: 0.9; }
+        .condition-text { font-size: 1.1rem; text-transform: uppercase; font-weight: 700; margin-top: 5px; }
 
         .assistant-box {
             text-align: left;
@@ -370,26 +345,9 @@
             padding-top: 15px;
             border-top: 1px dashed var(--fg);
         }
-        .assistant-text {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            font-weight: 500;
-        }
-
-        .section-header {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            border-bottom: var(--border);
-            padding-bottom: 5px;
-            margin: 35px 0 15px 0;
-            text-align: left;
-            display: none; 
-        }
+        .assistant-text { font-size: 0.95rem; line-height: 1.5; font-weight: 500; }
 
         .details-grid {
-            display: none;
             grid-template-columns: repeat(2, 1fr); 
             gap: 20px 10px;
             width: 100%;
@@ -419,8 +377,25 @@
         }
         .tiny-icon { font-size: 24px !important; }
 
+        /* Forecast Tab inner elements */
+        #tab-forecasts {
+            flex-direction: column;
+        }
+
+        .sub-header {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            border-bottom: 1px dashed var(--fg);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            text-align: left;
+            width: 100%;
+        }
+
         #hourly-scroll {
-            display: none;
+            display: flex;
             flex-direction: row;
             overflow-x: auto;
             gap: 20px;
@@ -442,20 +417,16 @@
         .hourly-time { font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
         .hourly-temp { font-size: 1.1rem; margin-top: 5px; font-weight: 700; }
         .hourly-pop { 
-            font-size: 0.75rem; 
-            font-weight: 700; 
-            margin-top: 2px;
-            opacity: 0.8;
-            display: flex;
-            align-items: center;
-            gap: 2px;
+            font-size: 0.75rem; font-weight: 700; margin-top: 2px; opacity: 0.8;
+            display: flex; align-items: center; gap: 2px;
         }
 
         #forecast-grid {
-            display: none;
+            display: grid;
             grid-template-columns: 1fr;
             gap: 10px;
             width: 100%;
+            margin-top: 10px;
         }
         
         .forecast-row {
@@ -466,21 +437,9 @@
             border-bottom: 1px solid rgba(125,125,125,0.3);
         }
         .day-name { 
-            font-size: 1rem; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            width: 90px; 
-            text-align: left; 
-            display: flex;
-            align-items: baseline;
+            font-size: 1rem; font-weight: 800; text-transform: uppercase; width: 90px; text-align: left; display: flex; align-items: baseline;
         }
-        .day-date {
-            font-weight: 400;
-            font-size: 0.8rem;
-            opacity: 0.7;
-            margin-left: 6px;
-        }
-
+        .day-date { font-weight: 400; font-size: 0.8rem; opacity: 0.7; margin-left: 6px; }
         .forecast-mid { display: flex; align-items: center; gap: 10px; flex-grow: 1; justify-content: center;}
         .forecast-icon { font-size: 32px !important; }
         .forecast-pop { font-size: 0.8rem; font-weight: 600; min-width: 40px; text-align: right;}
@@ -496,17 +455,52 @@
         }
         .dot { width: 8px; height: 8px; background: var(--fg); opacity: 0.3; border-radius: 50%; }
         .dot.active { opacity: 1; }
+
+        .main-bottom-nav {
+            display: none; /* hidden when no city is active */
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 420px;
+            border-top: var(--border);
+            background: var(--bg);
+            height: 60px;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+        }
+        
+        .nav-arrow {
+            background: transparent;
+            border: none;
+            color: var(--fg);
+            cursor: pointer;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-arrow .material-symbols-outlined { font-size: 36px; }
+        
+        .tab-label {
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 1rem;
+        }
     </style>
 </head>
 <body>
-
     <div class="menu-overlay" id="privacy-overlay" style="z-index: 2001; display: none;">
         <button class="close-overlay-btn" onclick="togglePrivacy()"><span class="material-symbols-outlined">close</span></button>
         <div class="menu-header">Privacy Policy</div>
         <div class="menu-content" style="text-align: left; font-size: 0.95rem; line-height: 1.6; padding: 0 10px;">
-            <p><strong>1. Data Collection</strong><br>This app does not collect, store, or share your personal data on external servers. All settings, including saved locations, are stored locally on your device.</p>
-            <p><strong>2. Location Services</strong><br>Your location is used solely to fetch weather data from Open-Meteo. Coordinates are sent anonymously to the API.</p>
-            <p><strong>3. Third-Party Services</strong><br>Weather data is provided by Open-Meteo. Please refer to their privacy policy for API usage details.</p>
+            <p><strong>1. Data Collection</strong><br>This app does not collect, store, or share your personal data on external servers. All settings are stored locally on your device.</p>
+            <p><strong>2. Location Services</strong><br>Your location is used solely to fetch weather data anonymously from Open-Meteo.</p>
+            <p><strong>3. Third-Party Services</strong><br>Weather data is provided by Open-Meteo.</p>
         </div>
     </div>
 
@@ -541,6 +535,7 @@
             <div class="settings-group">
                 <span class="settings-label">Keyboard Shortcuts</span>
                 <div class="shortcut-list">
+                    <div class="shortcut-row"><span>Next Tab</span> <span>ENTER</span></div>
                     <div class="shortcut-row"><span>Next City</span> <span>SPACE</span></div>
                     <div class="shortcut-row"><span>Refresh</span> <span>R</span></div>
                     <div class="shortcut-row"><span>Menu</span> <span>L</span></div>
@@ -549,7 +544,7 @@
             </div>
 
             <div class="version-text">
-                Minimal Weather v0.1 (20) Beta<br>
+                Pure Weather v0.2 Beta<br>
                 Data: <a href="https://open-meteo.com/" target="_blank">Open-Meteo</a><br>
                 <span onclick="togglePrivacy()" style="text-decoration: underline; cursor: pointer; margin-top:5px; display:inline-block;">Privacy Policy</span>
             </div>
@@ -578,10 +573,9 @@
     </div>
 
     <div class="container">
-        
         <div class="top-bar">
             <button class="menu-btn" onclick="toggleMenu()"><span class="material-symbols-outlined">menu</span></button>
-            <div class="top-title" onclick="toggleMenu()">WEATHER</div>
+            <div class="top-title" onclick="toggleMenu()">PURE WEATHER</div>
             <div class="top-actions">
                 <button class="refresh-btn" onclick="refreshCurrent()"><span class="material-symbols-outlined">refresh</span></button>
                 <button class="add-btn" onclick="toggleSearch()"><span class="material-symbols-outlined">add</span></button>
@@ -589,8 +583,10 @@
         </div>
         
         <div class="pagination-dots" id="dots-container"></div>
+        <div id="status" class="status-msg">Add a city to begin.</div>
 
-        <div id="current-weather">
+        <!-- TAB: OVERVIEW -->
+        <div id="tab-overview" class="tab-section">
             <div class="header-row">
                 <div class="city-name" id="display-city">--</div>
                 <div class="current-date" id="display-date">--</div>
@@ -605,14 +601,12 @@
             </div>
 
             <div class="assistant-box">
-                <div class="assistant-text" id="ai-summary">
-                    Loading...
-                </div>
+                <div class="assistant-text" id="ai-summary">Loading...</div>
             </div>
         </div>
 
-        <div class="section-header" id="details-header">Details</div>
-        <div class="details-grid" id="details-grid">
+        <!-- TAB: DETAILS -->
+        <div id="tab-details" class="tab-section details-grid">
             <div class="detail-item">
                 <div class="detail-label">Wind</div>
                 <div class="detail-value">
@@ -657,8 +651,8 @@
             </div>
         </div>
 
-        <div class="section-header" id="pollen-header">Pollen & Pollutants</div>
-        <div class="details-grid" id="pollen-grid">
+        <!-- TAB: POLLEN -->
+        <div id="tab-pollen" class="tab-section details-grid">
             <div class="detail-item">
                 <div class="detail-label">Tree</div>
                 <div class="detail-value">
@@ -703,19 +697,30 @@
             </div>
         </div>
 
-        <div class="section-header" id="hourly-header">Daily Forecast</div>
-        <div id="hourly-scroll"></div>
+        <!-- TAB: FORECASTS -->
+        <div id="tab-forecasts" class="tab-section">
+            <div class="sub-header">24-Hour</div>
+            <div id="hourly-scroll"></div>
+            
+            <div class="sub-header" style="margin-top: 15px;">7-Day</div>
+            <div id="forecast-grid"></div>
+        </div>
+    </div>
 
-        <div class="section-header" id="forecast-header">Weekly Forecast</div>
-        <div id="forecast-grid"></div>
-
-        <div id="status" class="status-msg">Add a city to begin.</div>
+    <div class="main-bottom-nav" id="main-bottom-nav">
+        <button class="nav-arrow" onclick="prevTab()"><span class="material-symbols-outlined">chevron_left</span></button>
+        <div class="tab-label" id="current-tab-title">OVERVIEW</div>
+        <button class="nav-arrow" onclick="nextTab()"><span class="material-symbols-outlined">chevron_right</span></button>
     </div>
 
     <script>
         let locations = [];
         let curLocIdx = 0;
         let currentUnit = 'c';
+        
+        // Tab logic variables
+        const tabs = ['overview', 'details', 'pollen', 'forecasts'];
+        let currentTabIdx = 0;
 
         function getIcon(code, isDay) {
             if (isDay === undefined) isDay = 1;
@@ -740,15 +745,17 @@
 
         const els = {
             status: document.getElementById('status'),
-            current: document.getElementById('current-weather'),
-            details: document.getElementById('details-grid'),
-            detailsHeader: document.getElementById('details-header'),
-            pollenGrid: document.getElementById('pollen-grid'),
-            pollenHeader: document.getElementById('pollen-header'),
+            // Tabs
+            tabOverview: document.getElementById('tab-overview'),
+            tabDetails: document.getElementById('tab-details'),
+            tabPollen: document.getElementById('tab-pollen'),
+            tabForecasts: document.getElementById('tab-forecasts'),
+            bottomNav: document.getElementById('main-bottom-nav'),
+            tabTitle: document.getElementById('current-tab-title'),
+            
+            // Content
             hourly: document.getElementById('hourly-scroll'),
-            hourlyHeader: document.getElementById('hourly-header'),
             forecast: document.getElementById('forecast-grid'),
-            forecastHeader: document.getElementById('forecast-header'),
             city: document.getElementById('display-city'),
             date: document.getElementById('display-date'),
             temp: document.getElementById('display-temp'),
@@ -781,6 +788,27 @@
             initUnit();
             loadLocations();
         });
+
+        function updateTabDisplay() {
+            const active = tabs[currentTabIdx];
+            
+            els.tabOverview.style.display = (active === 'overview') ? 'flex' : 'none';
+            els.tabDetails.style.display = (active === 'details') ? 'grid' : 'none';
+            els.tabPollen.style.display = (active === 'pollen') ? 'grid' : 'none';
+            els.tabForecasts.style.display = (active === 'forecasts') ? 'flex' : 'none';
+            
+            els.tabTitle.textContent = active.toUpperCase();
+        }
+
+        function nextTab() {
+            currentTabIdx = (currentTabIdx + 1) % tabs.length;
+            updateTabDisplay();
+        }
+
+        function prevTab() {
+            currentTabIdx = (currentTabIdx - 1 + tabs.length) % tabs.length;
+            updateTabDisplay();
+        }
 
         function initTheme() {
             const saved = localStorage.getItem('mw_theme') || 'auto';
@@ -837,6 +865,16 @@
             if (e.target.tagName === 'INPUT') return;
 
             switch(e.code) {
+                case 'Enter':
+                    e.preventDefault();
+                    nextTab();
+                    break;
+                case 'ArrowRight':
+                    nextTab();
+                    break;
+                case 'ArrowLeft':
+                    prevTab();
+                    break;
                 case 'Space':
                     e.preventDefault();
                     nextLocation();
@@ -876,9 +914,7 @@
                 if (locations.length > 0) {
                     if (lastIdx !== null) {
                         curLocIdx = parseInt(lastIdx, 10);
-                        if (isNaN(curLocIdx) || curLocIdx >= locations.length || curLocIdx < 0) {
-                            curLocIdx = 0;
-                        }
+                        if (isNaN(curLocIdx) || curLocIdx >= locations.length || curLocIdx < 0) curLocIdx = 0;
                     } else {
                         curLocIdx = 0;
                     }
@@ -893,9 +929,7 @@
                                 saveLocations();
                                 fetchWeatherForCurrent();
                             },
-                            () => {
-                                fetchWeatherForCurrent();
-                            },
+                            () => fetchWeatherForCurrent(),
                             { timeout: 5000, maximumAge: 0 }
                         );
                     } else {
@@ -943,9 +977,8 @@
             if(icon) {
                 icon.style.transition = 'transform 0.5s';
                 icon.style.transform = 'rotate(360deg)';
-                setTimeout(() => { icon.style.transform = 'none'; }, 500);
+                setTimeout(() => { icon.style.transition = 'none'; icon.style.transform = 'none'; }, 500);
             }
-            
             fetchWeatherForCurrent();
         }
 
@@ -973,10 +1006,11 @@
 
         function selectLocation(idx) {
             curLocIdx = idx;
-            if (els.menu.style.display === 'flex') {
-                history.back(); 
-            }
+            if (els.menu.style.display === 'flex') history.back(); 
             saveLocations();
+            
+            // Reset to Overview tab when changing city
+            currentTabIdx = 0; 
             fetchWeatherForCurrent();
         }
 
@@ -984,6 +1018,7 @@
             if (locations.length < 2) return;
             curLocIdx = (curLocIdx + 1) % locations.length;
             saveLocations(); 
+            currentTabIdx = 0; // Reset to overview tab
             fetchWeatherForCurrent();
         }
 
@@ -1005,9 +1040,7 @@
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
                     addLocation("Your Location", pos.coords.latitude, pos.coords.longitude);
-                    if (els.search.style.display === 'flex') {
-                        history.back();
-                    }
+                    if (els.search.style.display === 'flex') history.back();
                 },
                 () => showStatus("Access denied.")
             );
@@ -1031,9 +1064,7 @@
         function addLocation(name, lat, lon) {
             if (name === "Your Location") {
                 const existingIdx = locations.findIndex(loc => loc.name === "Your Location");
-                if (existingIdx !== -1) {
-                    locations.splice(existingIdx, 1);
-                }
+                if (existingIdx !== -1) locations.splice(existingIdx, 1);
                 locations.unshift({ name, lat, lon });
                 curLocIdx = 0; 
             } else {
@@ -1048,6 +1079,7 @@
             }
             
             saveLocations();
+            currentTabIdx = 0;
             fetchWeatherForCurrent();
         }
 
@@ -1080,7 +1112,6 @@
 
         function generateAssistantSummary(temp, code, wind, uv, rainProb, isDay, daily, aqi) {
             let windKmh = currentUnit === 'f' ? wind * 1.609 : wind;
-            
             let tempC = currentUnit === 'f' ? (temp - 32) * 5/9 : temp;
 
             let text = "";
@@ -1095,14 +1126,14 @@
             else if (tempC < 30) text += `It is quite warm outside. `;
             else text += `Hot conditions currently. `;
 
-            if (tempC < 5) text += "Heavy winter gear (thermal layers, gloves) recommended. ";
+            if (tempC < 5) text += "Heavy winter gear recommended. ";
             else if (tempC < 12) text += "Wear a warm coat. ";
             else if (tempC < 18) text += "A sweater or light jacket is advised. ";
             else if (tempC < 24) text += "Long sleeves or a t-shirt should suffice. ";
             else text += "Shorts and light clothing are best. ";
 
-            if (isRainy || rainProb > 40) text += "<b>Rain is likely today.</b> Don't forget an umbrella. ";
-            if (isSnowy) text += "<b>Snow is expected.</b> Water-resistant boots are a good idea. ";
+            if (isRainy || rainProb > 40) text += "<b>Rain is likely.</b> Don't forget an umbrella. ";
+            if (isSnowy) text += "<b>Snow is expected.</b> ";
             if (windKmh > 20) text += "It's breezy outside. ";
             if (isDay && uv > 6 && !isRainy) text += "UV index is high; wear sunscreen. ";
 
@@ -1111,7 +1142,6 @@
                 const todayMax = daily.temperature_2m_max[0];
                 const tomorrowMax = daily.temperature_2m_max[1];
                 const diff = tomorrowMax - todayMax;
-                
                 const threshold = currentUnit === 'f' ? 4 : 2;
 
                 if (diff > threshold) text += "Temperatures will rise tomorrow. ";
@@ -1122,30 +1152,22 @@
                 for(let i=1; i<=3; i++) {
                     if (daily.precipitation_probability_max[i] > 40) rainDays++;
                 }
-
                 if (rainDays > 0) text += "Expect some precipitation in the coming days. ";
                 else text += "The next few days look mostly dry. ";
             }
 
             text += "<br><br>";
-            
             const badWeather = isRainy || isSnowy || rainProb >= 50;
-            if (badWeather) {
-                text += "Outdoor activities are not recommended due to precipitation. ";
-            } else if (tempC > 33) {
-                text += "Avoid strenuous outdoor exercise due to high heat. ";
-            } else if (windKmh > 35) {
-                text += "Strong winds make outdoor activities difficult. ";
-            } else {
-                text += "Conditions are good for outdoor activities like walking or jogging. ";
-            }
+            if (badWeather) text += "Outdoor activities are not recommended due to precipitation. ";
+            else if (tempC > 33) text += "Avoid strenuous outdoor exercise due to high heat. ";
+            else if (windKmh > 35) text += "Strong winds make outdoor activities difficult. ";
+            else text += "Conditions are good for outdoor activities. ";
 
             if (aqi !== null && aqi !== undefined) {
                 let aqiDesc = "Good";
                 if (aqi > 50) aqiDesc = "Moderate";
                 if (aqi > 100) aqiDesc = "Unhealthy for Sensitive Groups";
                 if (aqi > 150) aqiDesc = "Unhealthy";
-                
                 text += `Air quality is <b>${aqiDesc}</b>. `;
             }
 
@@ -1286,21 +1308,20 @@
 
         function showUI() {
             els.status.style.display = 'none';
-            els.current.style.display = 'flex';
-            els.detailsHeader.style.display = 'block';
-            els.details.style.display = 'grid';
-            els.pollenHeader.style.display = 'block';
-            els.pollenGrid.style.display = 'grid';
-            els.hourlyHeader.style.display = 'block';
-            els.hourly.style.display = 'flex';
-            els.forecastHeader.style.display = 'block';
-            els.forecast.style.display = 'grid';
+            els.bottomNav.style.display = 'flex';
+            updateTabDisplay();
         }
 
         function showStatus(msg) {
             els.status.textContent = msg;
             els.status.style.display = 'block';
-            [els.current, els.details, els.detailsHeader, els.pollenGrid, els.pollenHeader, els.hourly, els.hourlyHeader, els.forecast, els.forecastHeader].forEach(e => e.style.display = 'none');
+            els.bottomNav.style.display = 'none';
+            
+            // Hide all tabs
+            els.tabOverview.style.display = 'none';
+            els.tabDetails.style.display = 'none';
+            els.tabPollen.style.display = 'none';
+            els.tabForecasts.style.display = 'none';
         }
     </script>
     <script>
