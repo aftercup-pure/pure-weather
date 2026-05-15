@@ -1,4 +1,4 @@
-# Minimal Weather
+# Pure Weather
 
 A lightweight, privacy-focused weather application specifically designed for the **Minimal Phone** and other e-paper devices. Minimal Weather leverages the Open-Meteo API to provide hyper-local forecasts and air quality data in a high-contrast, battery-efficient interface.
 
