@@ -8,8 +8,8 @@ A lightweight, privacy-focused weather application specifically designed for the
 
 | | |
 | :---: | :---: |
-| ![Homescreen](https://i.postimg.cc/mgD9VFVF/Screenshot_20260203_232608.png) | ![Weathersummary](https://i.postimg.cc/FHRSGJGc/Screenshot_20260203_232617.png) |
-| ![forecasts](https://i.postimg.cc/XYJ5xyx5/Screenshot_20260203_232631.png) | ![locator](https://i.postimg.cc/JznXKBKk/Screenshot_20260203_232650.png) |
+| ![Homescreen](https://i.postimg.cc/pV7bzhF5/Screenshot-20260516-222246.png) | ![Weathersummary](https://i.postimg.cc/NGVqm9H9/Screenshot-20260516-222254.png) |
+| ![forecasts](https://i.postimg.cc/66SJn2vG/Screenshot-20260516-222303.png) | ![locator](https://i.postimg.cc/JznXKBKk/Screenshot_20260203_232650.png) |
 | ![Menu1](https://i.postimg.cc/YC9F8m8Y/Screenshot_20260203_232700.png) | ![Menu2](https://i.postimg.cc/85qxNg03/Screenshot-20260207-211205.png) |
 
 ---
