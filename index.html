@@ -348,8 +348,9 @@
         .assistant-text { font-size: 0.95rem; line-height: 1.5; font-weight: 500; }
 
         .details-grid {
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 20px 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 20px 5px;
             width: 100%;
         }
 
@@ -357,28 +358,28 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            padding-left: 5px;
+            padding-left: 2px;
         }
 
         .detail-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             font-weight: 700;
             opacity: 0.7;
             margin-bottom: 4px;
+            white-space: nowrap;
         }
 
         .detail-value {
-            font-size: 1.3rem;
+            font-size: 1.05rem;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
         }
-        .tiny-icon { font-size: 24px !important; }
+        .tiny-icon { font-size: 20px !important; }
 
-        /* Forecast Tab inner elements */
-        #tab-forecasts {
+        #tab-details, #tab-forecasts {
             flex-direction: column;
         }
 
@@ -543,8 +544,16 @@
                 </div>
             </div>
 
+            <div class="settings-group">
+                <span class="settings-label">Source</span>
+                <div class="theme-options" style="flex-direction: column;">
+                    <a href="https://github.com/aftercup-pure/pure-weather.git" target="_blank" class="theme-btn" style="text-decoration: none; text-align: center;">GitHub Repository</a>
+                    <a href="https://github.com/aftercup-pure" target="_blank" class="theme-btn" style="text-decoration: none; text-align: center;">Pure Store</a>
+                </div>
+            </div>
+
             <div class="version-text">
-                Pure Weather v0.2 Beta<br>
+                Pure Weather v0.2 (24) beta<br>
                 Data: <a href="https://open-meteo.com/" target="_blank">Open-Meteo</a><br>
                 <span onclick="togglePrivacy()" style="text-decoration: underline; cursor: pointer; margin-top:5px; display:inline-block;">Privacy Policy</span>
             </div>
@@ -601,12 +610,14 @@
             </div>
 
             <div class="assistant-box">
-                <div class="assistant-text" id="ai-summary">Loading...</div>
-            </div>
+            <div class="assistant-text" id="ai-summary">Loading...</div>
         </div>
+    </div>
 
-        <!-- TAB: DETAILS -->
-        <div id="tab-details" class="tab-section details-grid">
+    <!-- TAB: DETAILS -->
+    <div id="tab-details" class="tab-section">
+        <div class="sub-header">Weather</div>
+        <div class="details-grid">
             <div class="detail-item">
                 <div class="detail-label">Wind</div>
                 <div class="detail-value">
@@ -651,8 +662,8 @@
             </div>
         </div>
 
-        <!-- TAB: POLLEN -->
-        <div id="tab-pollen" class="tab-section details-grid">
+        <div class="sub-header" style="margin-top: 25px;">Pollen & Pollutants</div>
+        <div class="details-grid">
             <div class="detail-item">
                 <div class="detail-label">Tree</div>
                 <div class="detail-value">
@@ -696,9 +707,10 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- TAB: FORECASTS -->
-        <div id="tab-forecasts" class="tab-section">
+    <!-- TAB: FORECASTS -->
+    <div id="tab-forecasts" class="tab-section">
             <div class="sub-header">24-Hour</div>
             <div id="hourly-scroll"></div>
             
@@ -719,7 +731,7 @@
         let currentUnit = 'c';
         
         // Tab logic variables
-        const tabs = ['overview', 'details', 'pollen', 'forecasts'];
+        const tabs = ['overview', 'details', 'forecasts'];
         let currentTabIdx = 0;
 
         function getIcon(code, isDay) {
@@ -748,7 +760,6 @@
             // Tabs
             tabOverview: document.getElementById('tab-overview'),
             tabDetails: document.getElementById('tab-details'),
-            tabPollen: document.getElementById('tab-pollen'),
             tabForecasts: document.getElementById('tab-forecasts'),
             bottomNav: document.getElementById('main-bottom-nav'),
             tabTitle: document.getElementById('current-tab-title'),
@@ -793,8 +804,7 @@
             const active = tabs[currentTabIdx];
             
             els.tabOverview.style.display = (active === 'overview') ? 'flex' : 'none';
-            els.tabDetails.style.display = (active === 'details') ? 'grid' : 'none';
-            els.tabPollen.style.display = (active === 'pollen') ? 'grid' : 'none';
+            els.tabDetails.style.display = (active === 'details') ? 'flex' : 'none';
             els.tabForecasts.style.display = (active === 'forecasts') ? 'flex' : 'none';
             
             els.tabTitle.textContent = active.toUpperCase();
@@ -1320,7 +1330,6 @@
             // Hide all tabs
             els.tabOverview.style.display = 'none';
             els.tabDetails.style.display = 'none';
-            els.tabPollen.style.display = 'none';
             els.tabForecasts.style.display = 'none';
         }
     </script>
